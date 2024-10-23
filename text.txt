@@ -1,0 +1,5 @@
+git remote add upstream <main repo link>
+git fetch upstream
+git commit -m "feat: message"
+git pull upstream beta
+git push --set -upstream origin <Branch Name>
