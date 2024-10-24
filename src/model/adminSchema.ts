@@ -14,6 +14,7 @@ export interface IAdmins extends Document {
   IsDelete: boolean | null;
   IsActive: boolean | null;
   DeletedBy: string | null;
+  isVerified: boolean;
 }
 
 const AdminsSchema: Schema = new Schema(
@@ -29,6 +30,7 @@ const AdminsSchema: Schema = new Schema(
     IsDelete: { type: Boolean },
     IsActive: { type: Boolean },
     DeletedBy: { type: String },
+    isVerified: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
