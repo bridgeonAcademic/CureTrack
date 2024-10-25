@@ -5,9 +5,6 @@ import { verifySignUpOTP } from "../otp/contoller/otpController";
 
 const adminRoutes = express.Router();
 
-adminRoutes.get("/", (req: Request, res: Response) => {
-  res.send("Hello World!..");
-});
 adminRoutes.post("/signup", signUp);
 adminRoutes.post("/verify-otp", verifySignUpOTP);
 

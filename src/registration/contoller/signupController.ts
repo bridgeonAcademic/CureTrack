@@ -8,16 +8,18 @@ import pendingAdmins from "../../utils/pendingAdmin";
 
 const signUp = async (req: Request, res: Response) => {
   interface SignUpBody {
-    FullName: string;
+    FirstName: string;
+    LastName: string;
     PhoneNumber: string;
     Email: string;
     Password: string;
   }
 
   try {
-    const { FullName, PhoneNumber, Email, Password }: SignUpBody = req.body;
+    const { FirstName, LastName, PhoneNumber, Email, Password }: SignUpBody =
+      req.body;
 
-    if (!FullName || !PhoneNumber || !Email || !Password) {
+    if (!FirstName || !LastName || !PhoneNumber || !Email || !Password) {
       res
         .status(400)
         .json({ success: false, message: "All fields are required" });
@@ -33,7 +35,8 @@ const signUp = async (req: Request, res: Response) => {
     }
 
     const validatedAdmin = await adminSignUpValidation.validateAsync({
-      FullName,
+      FirstName,
+      LastName,
       Email,
       PhoneNumber,
       Password,
@@ -41,7 +44,8 @@ const signUp = async (req: Request, res: Response) => {
     const hashedPass = await hashedPassword(validatedAdmin.Password);
 
     pendingAdmins[Email] = {
-      FullName: validatedAdmin.FullName,
+      FirstName:validatedAdmin.FirstName,
+      LastName:validatedAdmin.LastName,
       PhoneNumber: validatedAdmin.PhoneNumber,
       Email: validatedAdmin.Email,
       Password: hashedPass,

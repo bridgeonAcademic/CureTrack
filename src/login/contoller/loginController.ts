@@ -5,15 +5,14 @@ import { generateToken } from "../../utils/jwt";
 
 const login = async (req: Request, res: Response) => {
   interface loginBody {
-    PhoneNumber?: string;
-    Email?: string;
+    Email: string;
     Password: string;
   }
 
   try {
-    const { Email, PhoneNumber, Password }: loginBody = req.body;
+    const { Email, Password }: loginBody = req.body;
 
-    if (!(Email || PhoneNumber) || !Password) {
+    if (!Email || !Password) {
       res.status(401).json({
         success: false,
         message: "Email or PhoneNumber and Password are required",
@@ -21,9 +20,7 @@ const login = async (req: Request, res: Response) => {
       return;
     }
 
-    const admin = await AdminSchema.findOne({
-      $or: [{ Email: Email }, { PhoneNumber: PhoneNumber }],
-    });
+    const admin = await AdminSchema.findOne({ Email });
 
     if (!admin) {
       res.status(402).json({
@@ -33,10 +30,7 @@ const login = async (req: Request, res: Response) => {
       return;
     }
 
-    const validatedAdmin = await comparePassword(
-      Password,
-      admin?.Password
-    );
+    const validatedAdmin = await comparePassword(Password, admin?.Password);
 
     if (!validatedAdmin) {
       res.status(403).json({

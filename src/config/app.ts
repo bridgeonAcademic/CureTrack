@@ -19,9 +19,7 @@ app.use(
 app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ extended: true, limit: "100mb" }));
 
-// app.get("/api", (req: Request, res: Response) => {
-//   res.send("Hello World!..");
-// });
+
 app.use("/api", adminRoutes);
 
 export default app;
