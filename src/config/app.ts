@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { EventEmitter } from "events";
+import { adminRoutes } from "../routes/adminRoutes";
 
 dotenv.config();
 
@@ -18,8 +19,6 @@ app.use(
 app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ extended: true, limit: "100mb" }));
 
-app.get("/api", (req, res) => {
-  res.send("Hello World");
-});
+app.use("/api", adminRoutes);
 
 export default app;
