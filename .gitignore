@@ -1,3 +1,8 @@
-node_modules
-text.txt
+# Ignore environment variables
 .env
+
+# Other common ignores
+node_modules/
+dist/
+
+text.txt
