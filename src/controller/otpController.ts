@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import AdminSchema from "../../model/adminSchema";
-import { verifyOTP } from "../../utils/otp";
-import pendingAdmins from "../../utils/pendingAdmin";
+import AdminSchema from "../model/adminSchema";
+import pendingAdmins from "../utils/pendingAdmin";
+import { verifyOTP } from "../utils/otp";
 
 export const verifySignUpOTP = async (req: Request, res: Response) => {
   try {
@@ -31,7 +31,8 @@ export const verifySignUpOTP = async (req: Request, res: Response) => {
     }
 
     const newAdmin = new AdminSchema({
-      FullName: adminData.FullName,
+      FirstName: adminData.FirstName ,
+      LastName: adminData.LastName ,
       Email: adminData.Email,
       PhoneNumber: adminData.PhoneNumber,
       Password: adminData.Password,

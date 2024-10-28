@@ -1,7 +1,7 @@
-import AdminSchema from "../../model/adminSchema";
-import { Request, Response } from "express";
-import { comparePassword } from "../../utils/bcrypt";
-import { generateToken } from "../../utils/jwt";
+ import { Request, Response } from "express";
+import AdminSchema from "../model/adminSchema";
+import { generateToken } from "../utils/jwt";
+import { comparePassword } from "../utils/bcrypt";
 
 const login = async (req: Request, res: Response) => {
   interface loginBody {
