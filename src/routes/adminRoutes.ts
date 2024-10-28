@@ -1,7 +1,7 @@
-import express, { Request, Response } from "express";
-import { signUp } from "../registration/contoller/signupController";
-import { login } from "../login/contoller/loginController";
-import { verifySignUpOTP } from "../otp/contoller/otpController";
+import express from "express";
+import { signUp } from "../controller/signupController";
+import { verifySignUpOTP } from "../controller/otpController";
+import { login } from "../controller/loginController";
 
 const adminRoutes = express.Router();
 
