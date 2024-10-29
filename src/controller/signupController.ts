@@ -1,10 +1,10 @@
-import AdminSchema from "../../model/adminSchema";
+import AdminSchema from "../model/adminSchema";
+import { adminSignUpValidation } from "../middleware/joi-validation/adminSignUpValidation";
 import { Request, Response } from "express";
-import { adminSignUpValidation } from "../../middleware/joi-validation/adminSignUpValidation";
-import { hashedPassword } from "../../utils/bcrypt";
-import { generateOTP, storeOTP } from "../../utils/otp";
-import { sendOTPEmail } from "../../utils/email";
-import pendingAdmins from "../../utils/pendingAdmin";
+import { hashedPassword } from "../utils/bcrypt";
+import pendingAdmins from "../utils/pendingAdmin";
+import { generateOTP, storeOTP } from "../utils/otp";
+import { sendOTPEmail } from "../utils/email";
 
 const signUp = async (req: Request, res: Response) => {
   interface SignUpBody {
@@ -44,8 +44,8 @@ const signUp = async (req: Request, res: Response) => {
     const hashedPass = await hashedPassword(validatedAdmin.Password);
 
     pendingAdmins[Email] = {
-      FirstName:validatedAdmin.FirstName,
-      LastName:validatedAdmin.LastName,
+      FirstName: validatedAdmin.FirstName,
+      LastName: validatedAdmin.LastName,
       PhoneNumber: validatedAdmin.PhoneNumber,
       Email: validatedAdmin.Email,
       Password: hashedPass,
