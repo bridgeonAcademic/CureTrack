@@ -1,8 +1,10 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import morgan from 'morgan';
 import { EventEmitter } from "events";
 import { adminRoutes } from "../routes/adminRoutes";
+import approvalRoutes from '../routes/approvalRoutes'
 
 dotenv.config();
 
@@ -18,7 +20,9 @@ app.use(
 
 app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ extended: true, limit: "100mb" }));
+app.use(morgan('dev'));
 
 app.use("/api", adminRoutes);
+app.use("/api/approval", approvalRoutes);
 
 export default app;
