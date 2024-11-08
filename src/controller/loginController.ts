@@ -1,7 +1,7 @@
-import AdminSchema from "../../model/adminSchema";
 import { Request, Response } from "express";
-import { comparePassword } from "../../utils/bcrypt";
-import { generateToken } from "../../utils/jwt";
+import AdminSchema from "../model/adminSchema";
+import { generateToken } from "../utils/jwt";
+import { comparePassword } from "../utils/bcrypt";
 
 const login = async (req: Request, res: Response) => {
   interface loginBody {
@@ -42,11 +42,16 @@ const login = async (req: Request, res: Response) => {
 
     const token = generateToken(admin.id);
 
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 60 * 60 * 1000,
+    });
+
     res.status(200).json({
       success: true,
       message: "Admin login successfully ",
       data: admin,
-      token,
     });
   } catch (error) {
     const err = error as Error;

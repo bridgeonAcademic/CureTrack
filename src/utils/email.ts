@@ -14,19 +14,39 @@ const transporter = nodemailer.createTransport({
 
 export const sendOTPEmail = async (email: string, otp: string) => {
   const mailOptions = {
-    from: process.env.EMAIL_USER,
+    from: `"Cure Track" <${process.env.EMAIL_USER}>`,
     to: email,
+    replyTo: "curetrackproject@gmail.com",
     subject: "Your OTP Code",
     html: `
-    <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9;">
-      <h2 style="color: #333;">Welcome!</h2>
-      <p style="font-size: 16px;">Thank you for registering with us. Your One-Time Password (OTP) is:</p>
-      <h1 style="font-size: 24px; color: #007bff;">${otp}</h1>
-      <p style="font-size: 16px;">This OTP is valid for 5 minutes. Please enter it to verify your account.</p>
-      <p style="font-size: 16px;">If you did not request this, please ignore this email.</p>
-      <p style="font-size: 14px;">Best regards,<br>Cure Track</p>
+  <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px; background: linear-gradient(to bottom, #ffffff, #f4f4f4); max-width: 500px; margin: auto;">
+     <div style="text-align: center; margin-bottom: 20px;">
+        <img src="cid:logo"  alt="Cure Track Logo" style="width: 100px; height: auto;">
     </div>
-  `,
+    
+    <h2 style="color: #0056b3; text-align: center; font-size: 26px; margin-bottom: 10px;">Welcome to Cure Track!</h2>
+    <p style="font-size: 16px; color: #555; text-align: center;">Thank you for joining us! Use the One-Time Password (OTP) below to complete your registration:</p>
+    
+    <div style="text-align: center; margin: 20px 0;">
+            <h1 style="font-size: 36px; color: #007bff; margin: 0; background-color: #d3d3d352; padding: 10px 20px; border-radius: 8px; display: inline-block;">${otp}</h1>
+            <p style="font-size: 14px; color: #777; margin: 5px 0;">(Expires in 5 minutes)</p>
+        </div>
+    
+    <p style="font-size: 16px; color: #555; text-align: center;">Enter this code to verify your account and get started!</p>
+    
+    <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+    
+    <p style="font-size: 14px; color: #999; text-align: center;">If you did not request this, please disregard this email.</p>
+    
+    <p style="font-size: 14px; color: #333; text-align: center; margin-top: 30px;">Warm regards,<br><strong>Cure Track Team</strong></p>
+</div> `,
+    attachments: [
+      {
+        filename: "Logo.png",
+        path: "D:/Mine/Web Designing/Cure Track/CureTrack-Server/assets/Logo.png",
+        cid: "logo",
+      },
+    ],
   };
 
   try {

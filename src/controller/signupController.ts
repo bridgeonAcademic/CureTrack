@@ -1,10 +1,10 @@
-import AdminSchema from "../../model/adminSchema";
+import AdminSchema from "../model/adminSchema";
+import { adminSignUpValidation } from "../middleware/joi-validation/adminSignUpValidation";
 import { Request, Response } from "express";
-import { adminSignUpValidation } from "../../middleware/joi-validation/adminSignUpValidation";
-import { hashedPassword } from "../../utils/bcrypt";
-import { generateOTP, storeOTP } from "../../utils/otp";
-import { sendOTPEmail } from "../../utils/email";
-import pendingAdmins from "../../utils/pendingAdmin";
+import { hashedPassword } from "../utils/bcrypt";
+import pendingAdmins from "../utils/pendingAdmin";
+import { generateOTP, storeOTP } from "../utils/otp";
+import { sendOTPEmail } from "../utils/email";
 
 const signUp = async (req: Request, res: Response) => {
   interface SignUpBody {
@@ -19,12 +19,13 @@ const signUp = async (req: Request, res: Response) => {
     const { FirstName, LastName, PhoneNumber, Email, Password }: SignUpBody =
       req.body;
 
-    if (!FirstName || !LastName || !PhoneNumber || !Email || !Password) {
-      res
-        .status(400)
-        .json({ success: false, message: "All fields are required" });
-      return;
-    }
+    const validatedAdmin = await adminSignUpValidation.validateAsync({
+      FirstName,
+      LastName,
+      Email,
+      PhoneNumber,
+      Password,
+    });
 
     const existingAdmin = await AdminSchema.findOne({ Email });
     if (existingAdmin) {
@@ -34,18 +35,11 @@ const signUp = async (req: Request, res: Response) => {
       return;
     }
 
-    const validatedAdmin = await adminSignUpValidation.validateAsync({
-      FirstName,
-      LastName,
-      Email,
-      PhoneNumber,
-      Password,
-    });
     const hashedPass = await hashedPassword(validatedAdmin.Password);
 
     pendingAdmins[Email] = {
-      FirstName:validatedAdmin.FirstName,
-      LastName:validatedAdmin.LastName,
+      FirstName: validatedAdmin.FirstName,
+      LastName: validatedAdmin.LastName,
       PhoneNumber: validatedAdmin.PhoneNumber,
       Email: validatedAdmin.Email,
       Password: hashedPass,
@@ -62,10 +56,17 @@ const signUp = async (req: Request, res: Response) => {
     return;
   } catch (error) {
     const err = error as Error;
-    res
-      .status(500)
-      .json({ success: false, message: `Bad request: ${err.message}` });
-    return;
+    if ("isJoi" in err && err.isJoi === true) {
+      res.status(400).json({
+        success: false,
+        message: `Validation error: ${err.message}`,
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: `Server error: ${err.message}`,
+      });
+    }
   }
 };
 

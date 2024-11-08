@@ -2,7 +2,8 @@ import mongoose, { Schema, Document, ObjectId } from "mongoose";
 
 export interface IAdmins extends Document {
   _id: ObjectId;
-  FullName: string;
+  FirstName: string;
+  LastName: string;
   Email: string;
   PhoneNumber: string;
   Password: string;
@@ -18,7 +19,8 @@ export interface IAdmins extends Document {
 
 const AdminsSchema: Schema = new Schema(
   {
-    FullName: { type: String, required: true },
+    FirstName: { type: String, required: true },
+    LastName: { type: String, required: true },
     Email: { type: String, required: true, unique: true },
     PhoneNumber: { type: String, required: true },
     Password: { type: String, required: true },
