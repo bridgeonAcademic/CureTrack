@@ -7,6 +7,9 @@ export const createRequest = async (req: Request, res: Response): Promise<void> 
         const newRequest = await RequestModel.create({
             requester: req.body.requester,
             role: req.body.role,
+            name: req.body.name,
+            url: req.body.url,
+            status: req.body.status
         });
         res.status(201).json(newRequest);
     } catch (error) {
@@ -17,7 +20,7 @@ export const createRequest = async (req: Request, res: Response): Promise<void> 
 // Get all requests
 export const getAllRequests = async (req: Request, res: Response): Promise<void> => {
     try {
-        const requests = await RequestModel.find();
+        const requests = await RequestModel.find({status:"pending"});
         res.json(requests);
     } catch (error) {
         res.status(500).json({ message: "Failed to fetch requests", error });
@@ -27,7 +30,7 @@ export const getAllRequests = async (req: Request, res: Response): Promise<void>
 // Update request status
 export const updateRequestStatus = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { id, status, role } = req.body;
-
+    console.log(id, status)
     try {
         const request = await RequestModel.findByIdAndUpdate(
          id,
