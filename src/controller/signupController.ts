@@ -19,12 +19,13 @@ const signUp = async (req: Request, res: Response) => {
     const { FirstName, LastName, PhoneNumber, Email, Password }: SignUpBody =
       req.body;
 
-    if (!FirstName || !LastName || !PhoneNumber || !Email || !Password) {
-      res
-        .status(400)
-        .json({ success: false, message: "All fields are required" });
-      return;
-    }
+    const validatedAdmin = await adminSignUpValidation.validateAsync({
+      FirstName,
+      LastName,
+      Email,
+      PhoneNumber,
+      Password,
+    });
 
     const existingAdmin = await AdminSchema.findOne({ Email });
     if (existingAdmin) {
@@ -34,13 +35,6 @@ const signUp = async (req: Request, res: Response) => {
       return;
     }
 
-    const validatedAdmin = await adminSignUpValidation.validateAsync({
-      FirstName,
-      LastName,
-      Email,
-      PhoneNumber,
-      Password,
-    });
     const hashedPass = await hashedPassword(validatedAdmin.Password);
 
     pendingAdmins[Email] = {
@@ -62,10 +56,17 @@ const signUp = async (req: Request, res: Response) => {
     return;
   } catch (error) {
     const err = error as Error;
-    res
-      .status(500)
-      .json({ success: false, message: `Bad request: ${err.message}` });
-    return;
+    if ("isJoi" in err && err.isJoi === true) {
+      res.status(400).json({
+        success: false,
+        message: `Validation error: ${err.message}`,
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: `Server error: ${err.message}`,
+      });
+    }
   }
 };
 
