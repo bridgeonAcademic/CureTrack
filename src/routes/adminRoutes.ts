@@ -1,8 +1,8 @@
 import express from "express";
-import { signUp } from "../controller/signupController";
-import { verifySignUpOTP } from "../controller/otpController";
-import { login } from "../controller/loginController";
-import { getAllVendors } from "../controller/getAllVendors";
+import { signUp } from "../controllers/adminControllers/signupController";
+import { verifySignUpOTP } from "../controllers/adminControllers/otpController";
+import { login } from "../controllers/adminControllers/loginController";
+import { getAllVendors } from "../controllers/adminControllers/getAllVendors";
 
 const adminRoutes = express.Router();
 

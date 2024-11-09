@@ -1,11 +1,11 @@
 const pendingAdmins: Record<
   string,
   {
-    FirstName: string;
-    LastName: string;
-    PhoneNumber: string;
-    Email: string;
-    Password: string;
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+    email: string;
+    password: string;
   }
 > = {};
 
