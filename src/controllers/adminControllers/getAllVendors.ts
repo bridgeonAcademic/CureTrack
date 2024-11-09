@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import Vendors from "../model/vendorsSchema";
-
+import Vendors from "../../models/vendorModels/vendorsSchema";
+ 
 export const getAllVendors = async (req: Request, res: Response) => {
     try {
         // Fetching vendors
