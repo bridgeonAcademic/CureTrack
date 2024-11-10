@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import AdminSchema from "../model/adminSchema";
+import AdminSchema from "../models/adminSchema";
 import pendingAdmins from "../utils/pendingAdmin";
 import { verifyOTP } from "../utils/otp";
 

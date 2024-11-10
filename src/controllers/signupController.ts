@@ -1,5 +1,5 @@
-import AdminSchema from "../model/adminSchema";
-import { adminSignUpValidation } from "../middleware/joi-validation/adminSignUpValidation";
+import AdminSchema from "../models/adminSchema";
+import { adminSignUpValidation } from "../middlewares/joi-validation/adminSignUpValidation";
 import { Request, Response } from "express";
 import { hashedPassword } from "../utils/bcrypt";
 import pendingAdmins from "../utils/pendingAdmin";

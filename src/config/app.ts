@@ -4,7 +4,6 @@ import dotenv from "dotenv";
 import morgan from 'morgan';
 import { EventEmitter } from "events";
 import { adminRoutes } from "../routes/adminRoutes";
-import approvalRoutes from '../routes/approvalRoutes'
 
 dotenv.config();
 

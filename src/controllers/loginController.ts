@@ -1,5 +1,5 @@
  import { Request, Response } from "express";
-import AdminSchema from "../model/adminSchema";
+import AdminSchema from "../models/adminSchema";
 import { generateToken } from "../utils/jwt";
 import { comparePassword } from "../utils/bcrypt";
 
