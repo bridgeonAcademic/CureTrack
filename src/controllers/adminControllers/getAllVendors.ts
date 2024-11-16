@@ -3,7 +3,6 @@ import Vendors from "../../models/vendorModels/vendorsSchema";
  
 export const getAllVendors = async (req: Request, res: Response) => {
     try {
-        // Fetching vendors
         const vendorName = req.params.vendorName;
 
         const allVendors = await Vendors.find({});
