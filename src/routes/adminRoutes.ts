@@ -10,6 +10,7 @@ const adminRoutes = express.Router();
 adminRoutes.post("/signup", signUp);
 adminRoutes.post("/verify-otp", verifySignUpOTP);
 adminRoutes.post("/login", login);
+// Route to create a new approval request
 adminRoutes.post('/requests', createRequest);
 // Route to get all requests
 adminRoutes.get('/requests', getAllRequests);
