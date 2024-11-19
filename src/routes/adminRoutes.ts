@@ -3,11 +3,12 @@ import { signUp } from "../controllers/adminControllers/signupController";
 import { verifySignUpOTP } from "../controllers/adminControllers/otpController";
 import { login } from "../controllers/adminControllers/loginController";
 import { getAllVendors } from "../controllers/adminControllers/getAllVendors";
+import { refreshAccessToken } from "../controllers/adminControllers/tokenController";
 import { getTotalDoctorsCount, getTotalUsersCount } from "../controllers/adminControllers/dashboardController";
 import { getAllUsers, searchUsers, userBlockandUnblock } from "../controllers/adminControllers/usersController";
 import trycatch from "../middlewares/baseMiddlewares/try-catch/try-catch";
 import { getDoctorById } from "../controllers/adminControllers/doctorController";
-
+ 
 
 const adminRoutes = express.Router();
 
@@ -15,6 +16,8 @@ adminRoutes.post("/signup", signUp);
 adminRoutes.post("/verify-otp", verifySignUpOTP);
 
 adminRoutes.post("/login", login);
+adminRoutes.post("/refresh-token", refreshAccessToken);
+
 
 //fetching vendors
 adminRoutes.get('/vendors/:vendorName', getAllVendors);

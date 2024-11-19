@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { EventEmitter } from "events";
 import { adminRoutes } from "../routes/adminRoutes";
 import errorHandler from "../middlewares/baseMiddlewares/errors/errorHandler";  
+import { doctorRoutes } from "../routes/doctorRoutes";
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ extended: true, limit: "100mb" }));
 
 app.use("/api/admin", adminRoutes);
+app.use("/api/doctor", doctorRoutes);
 
 app.use(errorHandler);
 
