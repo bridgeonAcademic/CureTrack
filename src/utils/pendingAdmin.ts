@@ -9,4 +9,16 @@ const pendingAdmins: Record<
   }
 > = {};
 
-export default pendingAdmins;
+const pendingVendors: Record<
+  string,
+  {
+    name: string;
+    email: string;
+    phoneNumber: string;
+    vendorRole: string;
+    license: string;
+    password: string;
+  }
+> = {};
+
+export { pendingAdmins, pendingVendors };

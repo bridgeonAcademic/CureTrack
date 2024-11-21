@@ -100,7 +100,7 @@ export interface IVendors extends Document {
 }
 
 const VendorsSchema: Schema = new Schema({
-  vendorRole: [{ type: String, required: true }],
+  vendorRole: [{ type: String, required: true ,enum: ["hospital", "lab", "pharmacy"],}],
   name: { type: String, required: true },
   password: { type: String, required: true },
   license: { type: String, required: true },

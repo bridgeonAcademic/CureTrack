@@ -1,12 +1,17 @@
-import express from "express";
-import { uploadFields } from "../middlewares/doctorMiddlewares/multerConfig";
+import express, { Router } from "express";
 import { saveDoctorProfile } from "../controllers/doctorControllers/profileController";
-   
-const doctorRoutes = express.Router();
+import trycatch from "../middlewares/baseMiddlewares/try-catch/try-catch";
+import {
+  getDoctorDashboardActivities,
+  getDoctorDashboardAppointments,
+  getDoctorDashboardStats,
+} from "../controllers/doctorControllers/dashboardController";
 
+const doctorRoutes: Router = express.Router();
 
-doctorRoutes.post('/doctor/profile', uploadFields, saveDoctorProfile);
+doctorRoutes.post("/doctor-profile", trycatch(saveDoctorProfile));
+doctorRoutes.get("/stats", getDoctorDashboardStats);
+doctorRoutes.get("/recent-activities", getDoctorDashboardActivities);
+doctorRoutes.get("/appointments", getDoctorDashboardAppointments);
 
-
-
-export {doctorRoutes}
+export { doctorRoutes };

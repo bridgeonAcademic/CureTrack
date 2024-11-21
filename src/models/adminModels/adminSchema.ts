@@ -1,8 +1,7 @@
 import mongoose, { Schema, Document, ObjectId } from "mongoose";
 
 export interface IAdmins extends Document {
-  firstName: string;
-  lastName: string;
+  fullName: string;
   email: string;
   phoneNumber: string;
   password: string;
@@ -19,8 +18,7 @@ export interface IAdmins extends Document {
 
 const AdminsSchema: Schema = new Schema(
   {
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
+    fullName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     phoneNumber: { type: String, required: true },
     password: { type: String, required: true },
@@ -32,7 +30,7 @@ const AdminsSchema: Schema = new Schema(
     isActive: { type: Boolean },
     deletedBy: { type: String },
     isVerified: { type: Boolean, default: false },
-    refreshToken: { type: String, default: null }, 
+    refreshToken: { type: String, default: null },
   },
   { timestamps: true }
 );

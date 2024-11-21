@@ -1,11 +1,11 @@
 import AdminSchema from "../../models/adminModels/adminSchema";
-import { adminSignUpValidation } from "../../middlewares/baseMiddlewares/joi-validation/adminSignUpValidation";
 import { Request, Response } from "express";
- import pendingAdmins from "../../utils/pendingAdmin";
+import { pendingAdmins } from "../../utils/pendingAdmin";
 import { generateOTP, storeOTP } from "../../utils/otp";
 import { hashedPassword } from "../../utils/bcrypt";
 import { sendOTPEmail } from "../../utils/email";
- 
+import { adminSignUpValidation } from "../../middlewares/joi-validation/adminSignUpValidation";
+
 const signUp = async (req: Request, res: Response) => {
   interface SignUpBody {
     firstName: string;
