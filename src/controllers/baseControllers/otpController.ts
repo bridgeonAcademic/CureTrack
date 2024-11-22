@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import AdminSchema from "../../models/adminModels/adminSchema";
-import { pendingAdmins, pendingVendors } from "../../utils/pendingAdmin";
+import { pendingAdmins, pendingVendors } from "../../utils/pendings";
 import { verifyOTP } from "../../utils/otp";
 import VendorsSchema from "../../models/vendorModels/vendorsSchema";
 

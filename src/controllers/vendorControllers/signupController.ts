@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { pendingVendors } from "../../utils/pendingAdmin";
+import { pendingVendors } from "../../utils/pendings";
 import { generateOTP, storeOTP } from "../../utils/otp";
 import { hashedPassword } from "../../utils/bcrypt";
 import { sendOTPEmail } from "../../utils/email";

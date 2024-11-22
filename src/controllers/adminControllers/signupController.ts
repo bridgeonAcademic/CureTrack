@@ -1,6 +1,6 @@
 import AdminSchema from "../../models/adminModels/adminSchema";
 import { Request, Response } from "express";
-import { pendingAdmins } from "../../utils/pendingAdmin";
+import { pendingAdmins } from "../../utils/pendings";
 import { generateOTP, storeOTP } from "../../utils/otp";
 import { hashedPassword } from "../../utils/bcrypt";
 import { sendOTPEmail } from "../../utils/email";
