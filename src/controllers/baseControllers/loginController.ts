@@ -4,6 +4,7 @@ import { generateTokens } from "../../utils/jwt";
 import { comparePassword } from "../../utils/bcrypt";
 import VendorsSchema from "../../models/vendorModels/vendorsSchema";
 import DoctorsSchema from "../../models/doctorModels/doctorSchema";
+import userSchema from "../../models/userModels/userSchema";
 import { loginBody } from "../../interfaces/baseInterfaces";
 
 const login = async (req: Request, res: Response) => {
@@ -13,13 +14,13 @@ const login = async (req: Request, res: Response) => {
     if (!email || !password) {
       res.status(401).json({
         success: false,
-        message: "Email or PhoneNumber and password are required",
+        message: "Email and password are required",
       });
       return;
     }
 
     const admin = await AdminSchema.findOne({ email });
-    // const user = await userSchema.findOne({ email });
+    const user = await userSchema.findOne({ email });
     const vendor = await VendorsSchema.findOne({ email });
     const doctor = await DoctorsSchema.findOne({ email });
 
@@ -31,22 +32,26 @@ const login = async (req: Request, res: Response) => {
       return;
     }
 
-    let user: any;
-    let userType: string = "";
+    let client: any;
+    let clientType: string = "";
     let storedPassword: string = "";
 
     if (admin) {
-      user = admin;
-      userType = "admin";
+      client = admin;
+      clientType = "admin";
       storedPassword = admin.password;
     } else if (vendor) {
-      user = vendor;
-      userType = "vendor";
+      client = vendor;
+      clientType = "vendor";
       storedPassword = vendor.password;
     } else if (doctor) {
-      user = doctor;
-      userType = "doctor";
+      client = doctor;
+      clientType = "doctor";
       storedPassword = doctor.password as string;
+    } else if (user) {
+      client = user;
+      clientType = "user";
+      storedPassword = user.password;
     }
 
     const validatedAdmin = await comparePassword(password, storedPassword);
@@ -59,17 +64,20 @@ const login = async (req: Request, res: Response) => {
       return;
     }
 
-    const { accessToken, refreshToken } = generateTokens(user.id);
+    const { accessToken, refreshToken } = generateTokens(client._id);
 
-    if (userType === "admin" && admin) {
+    if (clientType === "admin" && admin) {
       (admin as any).refreshToken = refreshToken;
       await admin.save();
-    } else if (userType === "vendor" && vendor) {
+    } else if (clientType === "vendor" && vendor) {
       (vendor as any).refreshToken = refreshToken;
       await vendor.save();
-    } else if (userType === "doctor" && doctor) {
+    } else if (clientType === "doctor" && doctor) {
       (doctor as any).refreshToken = refreshToken;
       await doctor.save();
+    }else if (clientType === "user" && user) {
+      (user as any).refreshToken = refreshToken;
+      await user.save();
     }
 
     res.cookie("token", accessToken, {
@@ -87,10 +95,10 @@ const login = async (req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       message: `${
-        userType.charAt(0).toUpperCase() + userType.slice(1)
+        clientType.charAt(0).toUpperCase() + clientType.slice(1)
       } login successfully`,
-      data: user,
-      role: userType,
+      data: client,
+      role: clientType,
     });
   } catch (error) {
     const err = error as Error;

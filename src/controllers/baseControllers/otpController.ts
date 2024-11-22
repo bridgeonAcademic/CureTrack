@@ -38,7 +38,7 @@ export const verifySignUpOTP = async (req: Request, res: Response) => {
 
       res.status(200).json({
         success: true,
-        message: "OTP verified successfully. Admin registered.",
+        message: `OTP verified successfully. Admin registered.`,
       });
       return;
     }
@@ -58,7 +58,7 @@ export const verifySignUpOTP = async (req: Request, res: Response) => {
       delete pendingVendors[email];
       res.status(200).json({
         success: true,
-        message: "OTP verified successfully. Admin registered.",
+        message: `OTP verified successfully. ${vendorData.vendorRole} registered.`,
       });
       return;
     }

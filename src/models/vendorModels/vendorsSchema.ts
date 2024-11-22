@@ -99,126 +99,131 @@ export interface IVendors extends Document {
   isActive: boolean | null;
 }
 
-const VendorsSchema: Schema = new Schema({
-  vendorRole: [{ type: String, required: true ,enum: ["hospital", "lab", "pharmacy"],}],
-  name: { type: String, required: true },
-  password: { type: String, required: true },
-  license: { type: String, required: true },
-  email: { type: String, required: true },
-  address: {
-    buildingNumber: { type: String },
-    city: { type: String },
-    country: [{ type: String }],
-    pincode: { type: Number },
-    state: [{ type: String }],
-    street: { type: String },
+const VendorsSchema: Schema = new Schema(
+  {
+    vendorRole: [
+      { type: String, required: true, enum: ["hospital", "lab", "pharmacy"] },
+    ],
+    name: { type: String, required: true },
+    password: { type: String, required: true },
+    license: { type: String, required: true },
+    email: { type: String, required: true },
+    address: {
+      buildingNumber: { type: String },
+      city: { type: String },
+      country: [{ type: String }],
+      pincode: { type: Number },
+      state: [{ type: String }],
+      street: { type: String },
+    },
+    serviceOffered: [{ type: mongoose.Schema.Types.Mixed }],
+    licenseExpiry: { type: Date },
+    isApprovedByAdmin: { type: Boolean },
+    vendorStatus: [{ type: String }],
+    doctors: [
+      {
+        availableTimings: [{ type: String }],
+        consultationFee: { type: Number },
+        createdAt: { type: Date },
+        doctorId: { type: Schema.Types.ObjectId },
+        vendorId: { type: Schema.Types.ObjectId },
+      },
+    ],
+    phoneNumber: { type: Number, required: true },
+    createdAt: { type: Date, required: true, default: Date.now() },
+    operationalHours: [{ type: String }],
+    labs: [
+      {
+        _id: { type: Schema.Types.ObjectId },
+        tests: [
+          {
+            availableDays: { type: Date },
+            createdAt: { type: Date },
+            testDescription: { type: String },
+            testName: { type: String },
+            testPrice: { type: String },
+            turnAroundTime: { type: String },
+          },
+        ],
+        userReports: [{ type: mongoose.Schema.Types.Mixed }],
+      },
+    ],
+    pharmacies: [
+      {
+        medicines: [
+          {
+            createdAt: { type: Date },
+            manufacturer: { type: String },
+            medicineId: { type: String },
+            medicineName: { type: String },
+            medicineType: { type: String },
+            prescriptionRequired: { type: Boolean },
+            price: { type: Number },
+            stock: { type: Number },
+          },
+        ],
+        orders: [
+          {
+            createdAt: { type: Date },
+            deliveryDate: { type: Date },
+            isCancel: { type: Boolean },
+            isReturn: { type: Boolean },
+            orderItems: [{ type: mongoose.Schema.Types.Mixed }],
+            orderStatus: { type: String },
+            orderTotal: { type: Number },
+            paymentStatus: { type: String },
+            reason: { type: String },
+          },
+        ],
+        userId: { type: Schema.Types.ObjectId },
+      },
+    ],
+    appointments: [{ type: Schema.Types.ObjectId }],
+    hospital: [
+      {
+        facilities: [
+          {
+            ambulances: [
+              {
+                contactName: { type: String },
+                contactNumber: { type: Number },
+                vehicleNumber: { type: String },
+              },
+            ],
+            bloodGroup: [
+              {
+                availability: { type: Number },
+              },
+            ],
+            ICU: {
+              available: { type: Number },
+              total: { type: Number },
+            },
+            insurance: [
+              {
+                insurancePolicy: { type: String },
+                insuranceType: { type: String },
+              },
+            ],
+            ventilators: {
+              available: { type: Number },
+              total: { type: Number },
+            },
+          },
+        ],
+      },
+    ],
+    payment: [{ type: mongoose.Schema.Types.Mixed }],
+    vendorId: { type: String },
+    notification: [{ type: Schema.Types.ObjectId }],
+    subscription: { type: Schema.Types.ObjectId },
+    deletedBy: { type: String },
+    isDelete: { type: Boolean },
+    createdBy: { type: String },
+    isActive: { type: Boolean },
   },
-  serviceOffered: [{ type: mongoose.Schema.Types.Mixed }],
-  licenseExpiry: { type: Date },
-  isApprovedByAdmin: { type: Boolean },
-  vendorStatus: [{ type: String }],
-  doctors: [
-    {
-      availableTimings: [{ type: String }],
-      consultationFee: { type: Number },
-      createdAt: { type: Date },
-      doctorId: { type: Schema.Types.ObjectId },
-      vendorId: { type: Schema.Types.ObjectId },
-    },
-  ],
-  phoneNumber: { type: Number, required: true },
-  createdAt: { type: Date, required: true },
-  operationalHours: [{ type: String }],
-  labs: [
-    {
-      _id: { type: Schema.Types.ObjectId },
-      tests: [
-        {
-          availableDays: { type: Date },
-          createdAt: { type: Date },
-          testDescription: { type: String },
-          testName: { type: String },
-          testPrice: { type: String },
-          turnAroundTime: { type: String },
-        },
-      ],
-      userReports: [{ type: mongoose.Schema.Types.Mixed }],
-    },
-  ],
-  pharmacies: [
-    {
-      medicines: [
-        {
-          createdAt: { type: Date },
-          manufacturer: { type: String },
-          medicineId: { type: String },
-          medicineName: { type: String },
-          medicineType: { type: String },
-          prescriptionRequired: { type: Boolean },
-          price: { type: Number },
-          stock: { type: Number },
-        },
-      ],
-      orders: [
-        {
-          createdAt: { type: Date },
-          deliveryDate: { type: Date },
-          isCancel: { type: Boolean },
-          isReturn: { type: Boolean },
-          orderItems: [{ type: mongoose.Schema.Types.Mixed }],
-          orderStatus: { type: String },
-          orderTotal: { type: Number },
-          paymentStatus: { type: String },
-          reason: { type: String },
-        },
-      ],
-      userId: { type: Schema.Types.ObjectId },
-    },
-  ],
-  appointments: [{ type: Schema.Types.ObjectId }],
-  hospital: [
-    {
-      facilities: [
-        {
-          ambulances: [
-            {
-              contactName: { type: String },
-              contactNumber: { type: Number },
-              vehicleNumber: { type: String },
-            },
-          ],
-          bloodGroup: [
-            {
-              availability: { type: Number },
-            },
-          ],
-          ICU: {
-            available: { type: Number },
-            total: { type: Number },
-          },
-          insurance: [
-            {
-              insurancePolicy: { type: String },
-              insuranceType: { type: String },
-            },
-          ],
-          ventilators: {
-            available: { type: Number },
-            total: { type: Number },
-          },
-        },
-      ],
-    },
-  ],
-  payment: [{ type: mongoose.Schema.Types.Mixed }],
-  vendorId: { type: String },
-  notification: [{ type: Schema.Types.ObjectId }],
-  subscription: { type: Schema.Types.ObjectId },
-  deletedBy: { type: String },
-  isDelete: { type: Boolean },
-  createdBy: { type: String },
-  isActive: { type: Boolean },
-});
+  { timestamps: true }
+);
 
 const Vendors = mongoose.model<IVendors>("Vendors", VendorsSchema);
 
