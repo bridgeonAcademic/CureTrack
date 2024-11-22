@@ -1,13 +1,10 @@
-import express from "express";
-import { doctorSignup } from "../controllers/doctorControllers/authController";
-import trycatch from "../middlewares/baseMiddlewares/try-catch/try-catch";
+import express, { Router } from "express";
+import { signUp } from "../controllers/vendorControllers/signupController";
+
+const vendorsRoutes:Router = express.Router();
 
 
-const vendorRoutes =  express.Router()
+vendorsRoutes.post("/signup", signUp);
 
-//auth
-vendorRoutes.get("/signup",trycatch(doctorSignup))
+export default vendorsRoutes
 
-
-
-export default vendorRoutes

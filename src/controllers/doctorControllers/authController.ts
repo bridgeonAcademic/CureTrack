@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import Doctors from "../../models/doctorModels/doctorSchema";
-import { doctorSignUpValidation } from "../../middlewares/baseMiddlewares/joi-validation/doctoSignupValidation";
+import { doctorSignUpValidation } from "../../middlewares/joi-validation/doctoSignupValidation";
 import CustomError from "../../middlewares/baseMiddlewares/errors/CustomError";
 import { hashedPassword } from "../../utils/bcrypt";
 import { pendingDoctors } from "../../utils/pendingAdmin";

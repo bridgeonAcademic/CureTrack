@@ -1,6 +1,6 @@
 import { Joi } from "express-joi-validations";
 
-const doctorSignUpValidation = Joi.object({
+export const doctorSignUpValidation = Joi.object({
   fullName: Joi.string().required(),
   IMAId: Joi.string().required(),
   specialization: Joi.string().required(),
@@ -11,4 +11,3 @@ const doctorSignUpValidation = Joi.object({
 
 
 
-export { doctorSignUpValidation };
