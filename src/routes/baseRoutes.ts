@@ -9,4 +9,4 @@ baseRoutes.post("/verify-otp", verifySignUpOTP);
 baseRoutes.post("/login", login);
 baseRoutes.post("/refresh-token", refreshAccessToken);
 
-export { baseRoutes };
+export default baseRoutes
