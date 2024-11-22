@@ -39,6 +39,7 @@ export const verifySignUpOTP = async (req: Request, res: Response) => {
       res.status(200).json({
         success: true,
         message: `OTP verified successfully. Admin registered.`,
+        role: "admin",
       });
       return;
     }
@@ -59,6 +60,7 @@ export const verifySignUpOTP = async (req: Request, res: Response) => {
       res.status(200).json({
         success: true,
         message: `OTP verified successfully. ${vendorData.vendorRole} registered.`,
+        role: vendorData.vendorRole,
       });
       return;
     }

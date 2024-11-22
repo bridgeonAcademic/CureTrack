@@ -1,9 +1,10 @@
 import mongoose, { Schema, Document, ObjectId } from "mongoose";
 
 export interface IVendors extends Document {
-  vendorRole: string[];
+  vendorRole: string;
   name: string;
   password: string;
+  isVerified: boolean;
   license: string;
   email: string;
   address: {
@@ -101,9 +102,11 @@ export interface IVendors extends Document {
 
 const VendorsSchema: Schema = new Schema(
   {
-    vendorRole: [
-      { type: String, required: true, enum: ["hospital", "lab", "pharmacy"] },
-    ],
+    vendorRole: {
+      type: String,
+      required: true,
+      enum: ["hospital", "lab", "pharmacy"],
+    },
     name: { type: String, required: true },
     password: { type: String, required: true },
     license: { type: String, required: true },
@@ -221,6 +224,7 @@ const VendorsSchema: Schema = new Schema(
     isDelete: { type: Boolean },
     createdBy: { type: String },
     isActive: { type: Boolean },
+    isVerified: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

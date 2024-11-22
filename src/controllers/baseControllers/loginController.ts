@@ -9,12 +9,12 @@ import { loginBody } from "../../interfaces/baseInterfaces";
 
 const login = async (req: Request, res: Response) => {
   try {
-    const { email, password }: loginBody = req.body;
+    const { email, password, role }: loginBody = req.body;
 
-    if (!email || !password) {
+    if (!email || !password || !role) {
       res.status(401).json({
         success: false,
-        message: "Email and password are required",
+        message: "Email, password, and role are required",
       });
       return;
     }
@@ -24,7 +24,7 @@ const login = async (req: Request, res: Response) => {
     const vendor = await VendorsSchema.findOne({ email });
     const doctor = await DoctorsSchema.findOne({ email });
 
-    if (!admin && !vendor && !doctor) {
+    if (!admin && !vendor && !doctor && !user) {
       res.status(402).json({
         success: false,
         message: "No account found. Please create an account",
@@ -33,30 +33,34 @@ const login = async (req: Request, res: Response) => {
     }
 
     let client: any;
-    let clientType: string = "";
     let storedPassword: string = "";
 
-    if (admin) {
-      client = admin;
-      clientType = "admin";
-      storedPassword = admin.password;
-    } else if (vendor) {
-      client = vendor;
-      clientType = "vendor";
-      storedPassword = vendor.password;
-    } else if (doctor) {
-      client = doctor;
-      clientType = "doctor";
-      storedPassword = doctor.password as string;
-    } else if (user) {
-      client = user;
-      clientType = "user";
-      storedPassword = user.password;
+    if (role === "admin") {
+      client = await AdminSchema.findOne({ email });
+      storedPassword = client?.password || "";
+    } else if (role === "vendor") {
+      client = await VendorsSchema.findOne({ email });
+      storedPassword = client?.password || "";
+    } else if (role === "doctor") {
+      client = await DoctorsSchema.findOne({ email });
+      storedPassword = client?.password || "";
+    } else if (role === "user") {
+      client = await userSchema.findOne({ email });
+      storedPassword = client?.password || "";
     }
 
-    const validatedAdmin = await comparePassword(password, storedPassword);
+    if (!client) {
+      res.status(402).json({
+        success: false,
+        message:
+          "No account found with the given role. Please create an account",
+      });
+      return;
+    }
 
-    if (!validatedAdmin) {
+    const isPasswordValid = await comparePassword(password, storedPassword);
+
+    if (!isPasswordValid) {
       res.status(403).json({
         success: false,
         message: "Invalid password",
@@ -66,18 +70,18 @@ const login = async (req: Request, res: Response) => {
 
     const { accessToken, refreshToken } = generateTokens(client._id);
 
-    if (clientType === "admin" && admin) {
-      (admin as any).refreshToken = refreshToken;
-      await admin.save();
-    } else if (clientType === "vendor" && vendor) {
-      (vendor as any).refreshToken = refreshToken;
-      await vendor.save();
-    } else if (clientType === "doctor" && doctor) {
-      (doctor as any).refreshToken = refreshToken;
-      await doctor.save();
-    }else if (clientType === "user" && user) {
-      (user as any).refreshToken = refreshToken;
-      await user.save();
+    if (role === "admin") {
+      client.refreshToken = refreshToken;
+      await client.save();
+    } else if (role === "vendor") {
+      client.refreshToken = refreshToken;
+      await client.save();
+    } else if (role === "doctor") {
+      client.refreshToken = refreshToken;
+      await client.save();
+    } else if (role === "user") {
+      client.refreshToken = refreshToken;
+      await client.save();
     }
 
     res.cookie("token", accessToken, {
@@ -94,11 +98,9 @@ const login = async (req: Request, res: Response) => {
 
     res.status(200).json({
       success: true,
-      message: `${
-        clientType.charAt(0).toUpperCase() + clientType.slice(1)
-      } login successfully`,
+      message: `${role} login successfully`,
       data: client,
-      role: clientType,
+      role: role,
     });
   } catch (error) {
     const err = error as Error;
