@@ -27,4 +27,4 @@ adminRoutes.route("/doctors/:id").put(trycatch(doctorBlockandUnblock)).get(tryca
 adminRoutes.get("/doctors/specializations",trycatch(getUniqueSpecializations))
 
 
-export { adminRoutes };
+export default adminRoutes ;
