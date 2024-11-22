@@ -41,7 +41,6 @@ const UsersSchema: Schema = new Schema({
     },
   ],
   isDeleted: { type: Boolean, default: false },
-  is_blocked: { type: Boolean, default: false },
   isActive: { type: Boolean, default: true },
   deletedBy: { type: String },
   occupation: { type: String },

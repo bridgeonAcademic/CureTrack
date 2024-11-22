@@ -36,7 +36,6 @@ export interface IUsers extends Document {
     vendorId: ObjectId | null;
   }[];
   isDeleted: boolean | null;
-  is_blocked: boolean | null;
   isActive: boolean | null;
   deletedBy: string | null;
   occupation: string | null;
