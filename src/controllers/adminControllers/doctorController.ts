@@ -3,16 +3,31 @@ import Doctors from "../../models/doctorModels/doctorSchema";
 import CustomError from "../../middlewares/baseMiddlewares/errors/CustomError";
 import sendResponse from "../../utils/handlResponse";
 
-export const getAllDoctors = async (req: Request, res: Response) => {
+export const getAllDoctors = async (req: Request, res: Response): Promise<void> => {
   const page: number = parseInt(req.query.page as string) || 1;
   const limit: number = parseInt(req.query.limit as string) || 10;
+  const specialization: string | undefined = req.query.specialization as string;
+  const isActive: boolean | undefined = req.query.isActive === "true" ? true : req.query.isActive === "false" ? false : undefined;
+  const search: string | undefined = req.query.search as string;
+
   const skip = (page - 1) * limit;
 
-  const doctors = await Doctors.find().skip(skip).limit(limit);
-  const totalDoctors = await Doctors.countDocuments();
+  const query: any = {};
+  if (specialization) query.specialization = specialization;
+  if (typeof isActive === "boolean") query.isActive = isActive;
+
+  if (search) {
+    query.$or = [
+      { fullName: { $regex: search, $options: "i" } }, 
+      { email: { $regex: search, $options: "i" } }  
+    ];
+  }
+
+  const doctors = await Doctors.find(query).skip(skip).limit(limit);
+  const totalDoctors = await Doctors.countDocuments(query);
 
   if (!doctors || doctors.length === 0) {
-    throw new CustomError(404, "Doctor not found");
+    throw new CustomError(404, "No doctors found");
   }
 
   const totalPages = Math.ceil(totalDoctors / limit);
@@ -20,7 +35,7 @@ export const getAllDoctors = async (req: Request, res: Response) => {
   sendResponse(res, 200, true, "Doctors fetched successfully", doctors, {
     currentPage: page,
     totalPages,
-    totalUsers: totalDoctors,
+    totalDoctors,
     limit,
   });
 };
@@ -47,27 +62,6 @@ export const doctorBlockandUnblock = async (req: Request, res: Response) => {
   sendResponse(res, 200, true, message);
 };
 
-export const searchDoctors = async (req: Request, res: Response) => {
-  const searchQuery: string = req.query.searchQuery as string;
-
-  if (!searchQuery) {
-    throw new CustomError(400, "Search query cannot be empty");
-  }
-
-  const results = await Doctors.find({
-    $or: [
-      { fullName: { $regex: searchQuery, $options: "i" } },
-      { email: { $regex: searchQuery, $options: "i" } },
-    ],
-  });
-
-  if (results.length === 0) {
-    throw new CustomError(404, "No users found matching the search criteria");
-  }
-
-  sendResponse(res, 200, true, "Search Success", results);
-};
-
 export const getDoctorById = async (req: Request, res: Response) => {
   const doctorId = req.params.id;
 
@@ -78,3 +72,19 @@ export const getDoctorById = async (req: Request, res: Response) => {
 
   sendResponse(res, 200, true, "Doctor fetched successfully", doctor);
 };
+
+export const getUniqueSpecializations = async (req: Request, res: Response): Promise<void> => {
+    const specializations = await Doctors.distinct("specialization");
+
+    const normalizedSpecializations: string[] = specializations.map(String);
+
+    if (!normalizedSpecializations || normalizedSpecializations.length === 0) {
+      throw new CustomError(404, "No specializations found");
+    }
+
+    sendResponse(res, 200, true, "Specializations fetched successfully", normalizedSpecializations);
+};
+
+
+
+

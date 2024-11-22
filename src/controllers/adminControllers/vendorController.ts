@@ -31,4 +31,7 @@ export const getAllVendors = async (req: Request, res: Response) => {
     } catch (error: any) {
         res.status(500).json({ status: 'error', message: 'An error occurred while fetching data.', error: error.message });
     }
-};  
+}; 
+
+
+

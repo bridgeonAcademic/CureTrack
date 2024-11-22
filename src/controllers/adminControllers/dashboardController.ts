@@ -1,33 +1,39 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import Users from "../../models/userModels/userSchema";
 import Doctors from "../../models/doctorModels/doctorSchema";
-import CustomError from "../../middlewares/baseMiddlewares/errors/CustomError";
+import Vendors from "../../models/vendorModels/vendorsSchema";
+import sendResponse from "../../utils/handlResponse";
 
-export const getTotalUsersCount = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    const totalUsersResult = await Users.aggregate([
-      { $match: {  is_blocked: false } },
-      { $count: "totalUsers" }
+export const getDashboardCounts = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const [totalUsersResult, totalDoctorsResult, totalVendorsResult] =
+    await Promise.all([
+      Users.aggregate([
+        { $match: { isActive: true } },
+        { $count: "totalUsers" },
+      ]),
+      Doctors.aggregate([
+        { $match: { isActive: true } },
+        { $count: "totalDoctors" },
+      ]),
+      Vendors.aggregate([
+        { $match: { isActive: true } },
+        { $count: "totalVendors" },
+      ]),
     ]);
 
-    const totalUsersCount = totalUsersResult.length > 0 ? totalUsersResult[0].totalUsers : 0;
+  const totalUsersCount =
+    totalUsersResult.length > 0 ? totalUsersResult[0].totalUsers : 0;
+  const totalDoctorsCount =
+    totalDoctorsResult.length > 0 ? totalDoctorsResult[0].totalDoctors : 0;
+  const totalVendorsCount =
+    totalVendorsResult.length > 0 ? totalVendorsResult[0].totalVendors : 0;
 
-    res.status(200).json({success: true,message: "Total Users count calculated successfully.",totalUsersCount});
-  } catch (error) {
-    next(new CustomError(500, "Error calculating total Users count", error));
-  }
-};
-
-
-
-export const getTotalDoctorsCount = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  try {
-    const totalUsersResult = await Doctors.aggregate([{ $count: "totalDoctors" }]);
-
-    const totalUsersCount = totalUsersResult.length > 0 ? totalUsersResult[0].totalUsers : 0;
-
-    res.status(200).json({success: true,message: "Total Doctors count calculated successfully.",totalUsersCount});
-  } catch (error) {
-    next(new CustomError(500, "Error calculating total Doctors count", error));
-  }
+  sendResponse(res, 200, true, "Dashboard counts fetched successfully.", {
+    totalUsers: totalUsersCount,
+    totalDoctors: totalDoctorsCount,
+    totalVendors: totalVendorsCount,
+  });
 };
