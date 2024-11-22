@@ -7,4 +7,4 @@ import sendResponse from "../../utils/handlResponse";
 export const getHospitalDashboardCounts = async (
   req: Request,
   res: Response
-): Promise<void> => {c};
+): Promise<void> => {};
