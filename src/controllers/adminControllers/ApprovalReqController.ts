@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import RequestModel from '../../models/baseModels/ApprovalReqSchema';
+import RequestModel from '../../models/baseModels/approvalReqSchema';
 
 // Create a new approval request
 export const createRequest = async (req: Request, res: Response): Promise<void> => {
