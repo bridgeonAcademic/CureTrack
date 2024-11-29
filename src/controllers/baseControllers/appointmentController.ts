@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import Appointment from '../../models/appointmentModel/appointmentSchema';
+import Appointment from '../../models/baseModels/appointmentSchema';
 
 export const createAppointment = async (req: Request, res: Response): Promise<void> => {
   try {

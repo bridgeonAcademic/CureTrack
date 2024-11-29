@@ -9,7 +9,7 @@ import { getTotalDoctorsCount, getTotalUsersCount } from "../controllers/adminCo
 import { getAllUsers, searchUsers, userBlockandUnblock } from "../controllers/adminControllers/usersController";
 import trycatch from "../middlewares/baseMiddlewares/try-catch/try-catch";
 import { getDoctorById } from "../controllers/adminControllers/doctorController";
-import { createRequest, getAllRequests, updateRequestStatus } from "../controllers/adminControllers/ApprovalReqController";
+import { createRequest, getAllRequests, updateRequestStatus } from "../controllers/adminControllers/approvalReqController";
 
 
 
