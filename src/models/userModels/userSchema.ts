@@ -13,7 +13,7 @@ const UsersSchema: Schema = new Schema({
     state: { type: String },
     street: { type: String },
   },
-  dateOfBirth: { type: Date, required: true },
+  dateOfBirth: { type: String, required: true },
   gender: { type: String, required: true },
   profilePicture: { type: String },
   govtDocment: { type: Schema.Types.Mixed },
@@ -44,6 +44,7 @@ const UsersSchema: Schema = new Schema({
   isActive: { type: Boolean, default: true },
   deletedBy: { type: String },
   occupation: { type: String },
+  aadhaar: { type: String, required: true }
 });
 
 const Users = mongoose.model<IUsers>("Users", UsersSchema);

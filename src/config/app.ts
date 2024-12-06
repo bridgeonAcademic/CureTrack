@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import morgan from 'morgan';
 import { EventEmitter } from "events";
 import adminRoutes from "../routes/adminRoutes";
 import errorHandler from "../middlewares/baseMiddlewares/errors/errorHandler";
@@ -23,13 +24,14 @@ app.use(
 
 app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ extended: true, limit: "100mb" }));
+app.use(morgan('dev'));
 
 app.use("/api/", baseRoutes);
+// app.use("/appointment/api",appointmentRoutes )
 app.use("/api/admin", adminRoutes);
 app.use("/api/doctor", doctorRoutes);
 app.use("/api/vendor", vendorsRoutes);
-app.use("/api/users", userRoutes);
+app.use("/api/user", userRoutes);
 
 app.use(errorHandler);
-
 export default app;

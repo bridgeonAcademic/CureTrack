@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
- import appointmentModel from "../../models/baseModels/appointmentModel";
+ import appointmentModel from "../../models/baseModels/appointmentSchema";
 import CustomError from "../../middlewares/baseMiddlewares/errors/CustomError";
 
  export const getDoctorDashboardStats = async (req: Request, res: Response, next: NextFunction) => {

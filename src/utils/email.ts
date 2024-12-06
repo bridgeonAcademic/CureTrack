@@ -21,11 +21,11 @@ export const sendOTPEmail = async (email: string, otp: string) => {
     subject: "Your OTP Code",
     html: otpEmailTemplate(otp),
     attachments: [
-      {
-        filename: "Logo.png",
-        path: "D:/Mine/Web Designing/Cure Track/CureTrack-Server/assets/Logo.png",
-        cid: "logo",
-      },
+      // {
+      //   filename: "Logo.png",
+      //   path: "D:/Mine/Web Designing/Cure Track/CureTrack-Server/assets/Logo.png",
+      //   cid: "logo",
+      // }
     ],
   };
 

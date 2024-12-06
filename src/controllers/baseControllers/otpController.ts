@@ -1,13 +1,14 @@
 import { Request, Response } from "express";
 import AdminSchema from "../../models/adminModels/adminSchema";
-import { pendingAdmins, pendingVendors } from "../../utils/pendings";
+import { pendingAdmins, pendingUsers, pendingVendors } from "../../utils/pendings";
 import { verifyOTP } from "../../utils/otp";
 import VendorsSchema from "../../models/vendorModels/vendorsSchema";
+import UserSchema from "../../models/userModels/userSchema"
+import trycatch from "../../middlewares/baseMiddlewares/try-catch/try-catch";
 
 export const verifySignUpOTP = async (req: Request, res: Response) => {
   try {
     const { email, otp }: { email: string; otp: string } = req.body;
-
     if (!email || !otp) {
       res
         .status(400)
@@ -20,6 +21,33 @@ export const verifySignUpOTP = async (req: Request, res: Response) => {
       res
         .status(403)
         .json({ success: false, message: "Invalid or expired OTP." });
+      return;
+    }
+    const userData = pendingUsers[email]
+    if(userData){
+      const newUser = new UserSchema(
+        {
+          fullName: userData.fullName,
+          email: userData.email,
+          aadhaar: userData.aadhaar,
+          phoneNumber: userData.phoneNumber,
+          password: userData.password,
+          gender: userData.gender,
+          dateOfBirth: userData.dob,
+          createdBy:'user',
+          isVerified: true,
+        }
+      )
+      
+      console.log('okay1')
+      await newUser.save();
+      delete pendingUsers[email];
+      console.log('okay2')
+      res.status(200).json({
+        success: true,
+        message: `OTP verified successfully. Admin registered.`,
+        role: "user",
+      });
       return;
     }
 
@@ -65,6 +93,7 @@ export const verifySignUpOTP = async (req: Request, res: Response) => {
       return;
     }
   } catch (error) {
+    console.log(error)
     const err = error as Error;
     res
       .status(500)

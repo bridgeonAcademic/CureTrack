@@ -20,5 +20,17 @@ const pendingVendors: Record<
     password: string;
   }
 > = {};
+const pendingUsers: Record<
+  string,
+  {
+    fullName: string;
+    email: string;
+    phoneNumber: string;
+    dob: string;
+    gender: string;
+    password: string;
+    aadhaar: string;
+  }
+> = {};
 
-export { pendingAdmins, pendingVendors };
+export { pendingAdmins, pendingVendors, pendingUsers };

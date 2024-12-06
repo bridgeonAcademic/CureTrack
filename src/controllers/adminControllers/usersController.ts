@@ -3,6 +3,8 @@ import Users from "../../models/userModels/userSchema";
 import CustomError from "../../middlewares/baseMiddlewares/errors/CustomError";
 import sendResponse from "../../utils/handlResponse";
 
+
+
 export const getAllUsers = async (
   req: Request,
   res: Response

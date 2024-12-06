@@ -19,45 +19,29 @@ const login = async (req: Request, res: Response) => {
       return;
     }
 
-    const admin = await AdminSchema.findOne({ email });
-    const user = await userSchema.findOne({ email });
-    const vendor = await VendorsSchema.findOne({ email });
-    const doctor = await DoctorsSchema.findOne({ email });
-
-    if (!admin && !vendor && !doctor && !user) {
-      res.status(402).json({
-        success: false,
-        message: "No account found. Please create an account",
-      });
-      return;
-    }
-
     let client: any;
     let storedPassword: string = "";
 
     if (role === "admin") {
       client = await AdminSchema.findOne({ email });
-      storedPassword = client?.password || "";
     } else if (role === "vendor") {
       client = await VendorsSchema.findOne({ email });
-      storedPassword = client?.password || "";
     } else if (role === "doctor") {
       client = await DoctorsSchema.findOne({ email });
-      storedPassword = client?.password || "";
     } else if (role === "user") {
       client = await userSchema.findOne({ email });
-      storedPassword = client?.password || "";
+
     }
 
     if (!client) {
       res.status(402).json({
         success: false,
         message:
-          "No account found with the given role. Please create an account",
+          "No account found. Please create an account",
       });
       return;
     }
-
+    storedPassword = client?.password || "";
     const isPasswordValid = await comparePassword(password, storedPassword);
 
     if (!isPasswordValid) {

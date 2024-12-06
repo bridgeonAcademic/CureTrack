@@ -1,46 +1,53 @@
-import AdminSchema from "../../models/adminModels/adminSchema";
+import Users from "../../models/userModels/userSchema";
 import { Request, Response } from "express";
-import { pendingAdmins } from "../../utils/pendings";
+import {pendingUsers } from "../../utils/pendings";
 import { generateOTP, storeOTP } from "../../utils/otp";
 import { hashedPassword } from "../../utils/bcrypt";
 import { sendOTPEmail } from "../../utils/email";
-import { adminSignUpValidation } from "../../middlewares/joi-validation/adminSignUpValidation";
+import { userSignUpValidation } from "../../middlewares/joi-validation/userValidation";
 
 const signUp = async (req: Request, res: Response) => {
   interface SignUpBody {
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
-    email: string;
-    password: string;
+  fullName: string;
+  email: string;
+  password: string;
+  aadhaar: string;
+  phoneNumber: string;
+  gender: string;
+  dob: string;
   }
   try {
-    const { firstName, lastName, phoneNumber, email, password }: SignUpBody =
+    console.log("okay from user signUp");
+    const { fullName, email,password, aadhaar,phoneNumber, gender, dob}: SignUpBody =
       req.body;
 
-    const validatedAdmin = await adminSignUpValidation.validateAsync({
-      firstName,
-      lastName,
+    const validatedUser = await userSignUpValidation.validateAsync({
+      fullName,
       email,
       phoneNumber,
       password,
+      aadhaar,
+      gender,
+      dob
     });
 
-    const existingAdmin = await AdminSchema.findOne({ email });
-    if (existingAdmin) {
+    const existingUser = await Users.findOne({ email });
+    if (existingUser) {
       res
         .status(409)
         .json({ success: false, message: "email already exists!" });
       return;
     }
 
-    const hashedPass = await hashedPassword(validatedAdmin.password);
+    const hashedPass = await hashedPassword(validatedUser.password);
 
-    pendingAdmins[email] = {
-      firstName: validatedAdmin.firstName,
-      lastName: validatedAdmin.lastName,
-      phoneNumber: validatedAdmin.phoneNumber,
-      email: validatedAdmin.email,
+    pendingUsers[email] = {
+      fullName: validatedUser.fullName,
+      email: validatedUser.email,
+      aadhaar: validatedUser.aadhaar,
+      phoneNumber: validatedUser.phoneNumber,
+      gender: validatedUser.gender,
+      dob: validatedUser.dob,
       password: hashedPass,
     };
 
