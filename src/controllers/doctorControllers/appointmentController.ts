@@ -33,7 +33,7 @@ export const updateAppointmentStatus = async (req: Request, res: Response): Prom
     // Validate status
     const validStatuses = ['pending', 'confirmed', 'completed', 'canceled'];
     if (!validStatuses.includes(status)) {
-       res.status(400).json({ message: 'Invalid status' });
+       res.status(400).json({ message: 'Invalid status'});
     }
 
     // Update the status of the appointment

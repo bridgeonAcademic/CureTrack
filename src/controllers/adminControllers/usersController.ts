@@ -1,15 +1,71 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import Users from "../../models/userModels/userSchema";
 import CustomError from "../../middlewares/baseMiddlewares/errors/CustomError";
+import sendResponse from "../../utils/handlResponse";
 
-export const getAllUsers = async (req: Request,res: Response) => {
+
+
+export const getAllUsers = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const page: number = parseInt(req.query.page as string) || 1;
   const limit: number = parseInt(req.query.limit as string) || 10;
+  const isActive: boolean | undefined =
+    req.query.isActive === "true"
+      ? true
+      : req.query.isActive === "false"
+      ? false
+      : undefined;
+  const search: string | undefined = req.query.search as string;
+  const startDate: string | undefined = req.query.startDate as string;
+  const endDate: string | undefined = req.query.endDate as string;
 
   const skip = (page - 1) * limit;
 
-  const users = await Users.find().skip(skip).limit(limit);
-  const totalUsers = await Users.countDocuments();
+  const pipeline: any[] = [];
+
+  const match: any = {};
+  if (typeof isActive === "boolean") match.isActive = isActive;
+
+  if (search) {
+    match.$or = [
+      { fullName: { $regex: search, $options: "i" } },
+      { email: { $regex: search, $options: "i" } },
+    ];
+  }
+
+  if (startDate || endDate) {
+    match.createdAt = {};
+    if (startDate) match.createdAt.$gte = new Date(startDate);
+    if (endDate) match.createdAt.$lte = new Date(endDate);
+  }
+
+  if (Object.keys(match).length > 0) {
+    pipeline.push({ $match: match });
+  }
+
+  pipeline.push(
+    { $skip: skip },
+    { $limit: limit },
+    {
+      $project: {
+        fullName: 1,
+        email: 1,
+        isActive: 1,
+        createdAt: 1,
+      },
+    }
+  );
+
+  const countPipeline = [{ $match: match }, { $count: "totalUsers" }];
+
+  const [users, countResult] = await Promise.all([
+    Users.aggregate(pipeline),
+    Users.aggregate(countPipeline),
+  ]);
+
+  const totalUsers = countResult[0]?.totalUsers || 0;
 
   if (!users || users.length === 0) {
     throw new CustomError(404, "Users not found");
@@ -17,57 +73,33 @@ export const getAllUsers = async (req: Request,res: Response) => {
 
   const totalPages = Math.ceil(totalUsers / limit);
 
-  res.status(200).json({
-    success: true,
-    message: "Users fetched successfully",
-    data: users,
-    pagination: {
-      currentPage: page,
-      totalPages: totalPages,
-      totalUsers: totalUsers,
-      limit: limit,
-    },
+  sendResponse(res, 200, true, "Users fetched successfully", users, {
+    currentPage: page,
+    totalPages,
+    totalUsers,
+    limit,
   });
 };
 
 export const userBlockandUnblock = async (req: Request, res: Response) => {
-    const userId: string = req.params.id;
+  const userId: string = req.params.id;
 
-    const user = await Users.findById(userId);
+  const user = await Users.findById(userId);
 
-    if (!user) {
-      throw new CustomError(404, "User not found");
-    }
-
-    const newStatus = !user.is_blocked;
-    await Users.findByIdAndUpdate(userId, { is_blocked: newStatus }, { new: true });
-
-    const message = newStatus ? "User blocked successfully" : "User unblocked successfully";
-
-    return res.status(200).json({ success: true, message });
- 
-};
-
-
-export const searchUsers = async (req: Request, res: Response) => {
-
-    const searchQuery: string = req.query.searchQuery as string;
-
-    if (!searchQuery) {
-      throw new CustomError(400, "Search query cannot be empty");
-    }
-
-    const results = await Users.find({
-      $or: [
-        { fullName: { $regex: searchQuery, $options: "i" } },
-        { email: { $regex: searchQuery, $options: "i" } },
-      ],
-    });
-
-    if (results.length === 0) {
-      throw new CustomError(404, "No Doctors found matching the search criteria");
-    }
-
-    res.status(200).json({success: true,message: "Search Success",data: results,
-    });
+  if (!user) {
+    throw new CustomError(404, "User not found");
   }
+
+  const newStatus = !user.isActive;
+  await Users.findByIdAndUpdate(
+    userId,
+    { is_blocked: newStatus },
+    { new: true }
+  );
+
+  const message = newStatus
+    ? "User blocked successfully"
+    : "User unblocked successfully";
+
+  sendResponse(res, 200, true, message);
+};
