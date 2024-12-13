@@ -7,8 +7,11 @@ import {
   deleteMedicalHistory,
 } from "../controllers/baseControllers/medicalHistoryController";
 import { signUp } from "../controllers/userControllers/signUpController";
+import { getAllAppointments } from "../controllers/userControllers/appointmentController";
 
 const userRoutes:Router = express.Router();
+
+userRoutes.get("/getAllApointments",getAllAppointments)
 
 
 userRoutes.post('/signup', signUp)
